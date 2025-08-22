@@ -1,12 +1,14 @@
-version: '3.8'
+version: '2.6'
 services:
   mysql-db:
     image: 'mysql:latest'
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: transactiondb
+      MYSQL_DATABASE: transaction
     ports:
       - '3307:3306'
+    volumes:
+      - mysql-backup:/var/lib/mysql
 
   application:
     build:
@@ -16,8 +18,11 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - '9090:8181'
+      - '9091:8181'
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-db:3306/transactiondb'
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/transaction?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: password
+volumes:
+  mysql-backup:
+
